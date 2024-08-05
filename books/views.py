@@ -23,7 +23,6 @@ class ListCreateBookAPIView(ListCreateAPIView):
     filterset_class = BookFilter
 
     def perform_create(self, serializer):
-        # Assign the user who created the book
         serializer.save(author=self.request.user)
 
 
@@ -37,7 +36,7 @@ class RetrieveBookCommentsAPIView(APIView):
     def get(self, request, book_id):
         try:
             book = Book.objects.get(id=book_id)
-            comments = book.comments.all()  # Get all comments related to the book
+            comments = book.comments.all()
             serializer = CommentSerializer(comments, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except Book.DoesNotExist:
