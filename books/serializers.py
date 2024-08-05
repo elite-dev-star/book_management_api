@@ -5,11 +5,10 @@ from comments.models import Comment
 
 class BookSerializer(serializers.ModelSerializer):  # create class to serializer model
     author = serializers.ReadOnlyField(source='author.username')
-    comments = serializers.PrimaryKeyRelatedField(many=True, queryset=Comment.objects.all())
 
     class Meta:
         model = Book
-        fields = ('id', 'title', 'genre', 'year', 'author', 'comments')
+        fields = ('id', 'title', 'genre', 'year', 'author')
 
 
 class UserSerializer(serializers.ModelSerializer):  # create class to serializer user model
