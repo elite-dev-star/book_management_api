@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'authentication',
     'books',
+    'comments',
 ]
 
 SITE_ID = 1
