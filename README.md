@@ -1,7 +1,8 @@
 ## Requirements
-- Python 3.6
+- Python 3.7 +
 - Django 3.1
 - Django REST Framework
+- Pytest
 
 ## Installation
 python -m venv env
