@@ -13,11 +13,10 @@ class TestBookAPI:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.login(username='testuser', password='testpass')
         self.client.force_authenticate(user=self.user)
 
     def test_create_book(self):
-        url = reverse('get_books')
+        url = reverse('get_post_books')
         data = {
             'title': 'Test Book',
             'genre': 'Action',
@@ -27,6 +26,25 @@ class TestBookAPI:
         assert response.status_code == status.HTTP_201_CREATED
         assert Book.objects.count() == 1
         assert Book.objects.get().title == 'Test Book'
+
+    def test_search_books(self):
+        url = reverse('get_post_books')
+        Book.objects.create(
+            title='Test Book',
+            year=2024,
+            genre='Action',
+            author=self.user
+        )
+        Book.objects.create(
+            title='First Book',
+            year=2024,
+            genre='Action',
+            author=self.user
+        )
+        
+        response = self.client.get(url, { 'title': 'Book' });
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['count'] == 2
 
     def test_get_book(self):
         book = Book.objects.create(
@@ -54,6 +72,21 @@ class TestBookAPI:
         book.refresh_from_db()
         assert book.title == 'Updated Book'
 
+    def test_update_book_failed(self):
+        author = User.objects.create_user(username='john', password='john123!@#')
+        book = Book.objects.create(
+            title='Test Book',
+            year=2024,
+            genre='Action',
+            author=author
+        )
+
+        url = reverse('get_delete_update_book', kwargs={'pk': book.id})
+        updated_data = {'title': 'Updated Book', 'year': 2024, 'genre': 'Action'}
+        response = self.client.put(url, updated_data)
+
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
     def test_delete_book(self):
         book = Book.objects.create(
             title='Test Book',
@@ -67,6 +100,7 @@ class TestBookAPI:
         assert Book.objects.count() == 0
 
     def test_get_book_comments(self):
+        self.client.force_authenticate(user=self.user)
         book = Book.objects.create(
             title='Test Book',
             year=2024,

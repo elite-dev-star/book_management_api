@@ -17,7 +17,6 @@ class ListCreateCommentAPIView(ListCreateAPIView):
     filter_backends = (filters.DjangoFilterBackend,)
 
     def perform_create(self, serializer):
-        # Assign the user who created the book
         serializer.save(author=self.request.user)
 
 

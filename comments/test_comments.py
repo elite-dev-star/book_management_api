@@ -14,7 +14,6 @@ class TestCommentAPI:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.client.login(username='testuser', password='testpass')
         self.client.force_authenticate(user=self.user)
         self.book = Book.objects.create(
             title='Test Book',
